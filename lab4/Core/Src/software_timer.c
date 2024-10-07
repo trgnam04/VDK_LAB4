@@ -66,9 +66,3 @@ void timer3Run(void){
 }
 
 
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	if(htim->Instance == TIM2){
-		SCH_Update_Task();
-	}
-}

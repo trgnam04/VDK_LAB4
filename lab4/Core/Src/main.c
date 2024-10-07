@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "software_timer.h"
 #include "scheduler_O(1).h"
+#include "Task.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,7 +47,7 @@ TIM_HandleTypeDef htim2;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-unsigned char status[100];
+
 
 /* USER CODE END PV */
 
@@ -61,9 +62,6 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void toggleLedRed(void);
-void toggleLedYellow(void);
-void toggleLedGreen(void);
 /* USER CODE END 0 */
 
 /**
@@ -99,9 +97,13 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
   SCH_Init();
-  SCH_Add_Task(toggleLedRed, 100, 0);
-  SCH_Add_Task(toggleLedYellow, 200, 0);
-  SCH_Add_Task(toggleLedGreen, 300, 0);
+//    SCH_Add_Task(ToggleLedRed, 100, 50);
+  SCH_Add_Task(ToggleLedRed, 50, 0);
+  SCH_Add_Task(ToggleLedGreen, 100, 0);
+  SCH_Add_Task(ToggleLedYellow, 150, 0);
+  SCH_Add_Task(ToggleLedBlue, 200, 0);
+  SCH_Add_Task(ToggleLedOrange, 250, 0);
+
 
   /* USER CODE END 2 */
 
@@ -112,8 +114,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//	  sprintf((void*)status, "status: %d \r\n", container->tail->next->Delay);
-//	  HAL_UART_Transmit(&huart2, (void*)status, sizeof(status), 100);
 	  SCH_Dispatch_Task();
   }
   /* USER CODE END 3 */
@@ -246,9 +246,13 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, LED_RED_Pin|LED_YELLOW_Pin|LED_GREEN_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, LED_BLUE_Pin|LED_ORANGE_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : LED_RED_Pin LED_YELLOW_Pin LED_GREEN_Pin */
   GPIO_InitStruct.Pin = LED_RED_Pin|LED_YELLOW_Pin|LED_GREEN_Pin;
@@ -257,24 +261,23 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : LED_BLUE_Pin LED_ORANGE_Pin */
+  GPIO_InitStruct.Pin = LED_BLUE_Pin|LED_ORANGE_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
-void toggleLedRed(void){
-	HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+	if(htim->Instance == TIM2){
+		SCH_Update_Task();
+	}
 }
-
-void toggleLedYellow(void){
-	HAL_GPIO_TogglePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin);
-
-}
-
-void toggleLedGreen(void){
-	HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
-}
-
 
 
 /* USER CODE END 4 */

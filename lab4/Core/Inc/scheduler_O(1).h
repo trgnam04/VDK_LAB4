@@ -9,8 +9,8 @@
 #define INC_SCHEDULER_O_1__H_
 
 #include "main.h"
-#include "stdlib.h"
 #include "software_timer.h"
+#include <stdlib.h>
 
 typedef struct S_Task {
 	int Delay;
@@ -25,11 +25,10 @@ typedef struct Container{
 	S_Task* tail;
 } Container;
 
-extern Container* container;
 
 S_Task* addNode(void(*pFunction)(), int delay, int period);
 void SCH_Init(void);
-void SCH_Add_Task(void(*pFunction)(), int period, int delay);
+void SCH_Add_Task(void(*pFunction)(), int PERIOD, int DELAY);
 void SCH_Delete_Task(void);
 void SCH_Update_Task(void);
 void SCH_Dispatch_Task(void);

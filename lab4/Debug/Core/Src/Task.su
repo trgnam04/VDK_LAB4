@@ -1,0 +1,5 @@
+../Core/Src/Task.c:10:6:ToggleLedRed	8	static
+../Core/Src/Task.c:14:6:ToggleLedYellow	8	static
+../Core/Src/Task.c:18:6:ToggleLedGreen	8	static
+../Core/Src/Task.c:22:6:ToggleLedBlue	8	static
+../Core/Src/Task.c:26:6:ToggleLedOrange	8	static
